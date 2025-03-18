@@ -16,15 +16,14 @@ With this pipeline, you can take a list of candidate ADC constructs, supply the 
 ## Table of Contents
 
 1. [Overview](#overview)  
-2. [Repository Contents](#repository-contents)  
-3. [Installation and Dependencies](#installation-and-dependencies)  
-4. [Usage](#usage)  
+2. [Installation and Dependencies](#installation-and-dependencies)  
+3. [Usage](#usage)  
     - [CSV Input Mode](#csv-input-mode)  
     - [Manual Input Mode](#manual-input-mode)  
     - [Important Arguments](#important-arguments)  
     - [Example Commands](#example-commands)  
-5. [Citation](#citation)  
-6. [License](#license)
+4. [Citation](#citation)  
+5. [License](#license)
 
 ---
 
@@ -35,7 +34,7 @@ With this pipeline, you can take a list of candidate ADC constructs, supply the 
 - **Descriptor Generation**: SMILES are converted to RDKit-based descriptors, MACCS fingerprints, etc.
 - **Feature Assembly**: The script integrates:  
   - **Chemical features**: 2D descriptors, molecular weight calculations, etc.  
-  - **Gene/Protein features**: ESM2 embeddings (for the target protein), scaled/pca-transformed transcriptomic profiles for the cell line, scaled read counts, etc.
+  - **Gene/Protein features**: ESM2 embeddings (for the target protein), scaled/PCA-transformed transcriptomic profiles for the cell line, scaled read counts, etc.
 - **Protein Intensity Prediction**: A trained regression model (`ProteinIntensityModel`) estimates protein abundance from combined ESM embeddings, cell-line transcriptomic embeddings, and read counts.
 - **Final CNN Classification**: A second PyTorch Lightning model performs a binary classification of ADC efficacy using the assembled feature vectors.
 
@@ -43,34 +42,6 @@ Use either:
 
 - A CSV file with columns specifying SMILES, gene symbol, cell line, etc., **OR**
 - Command-line arguments for a single SMILES and multiple `(gene_symbol, cell_line)` pairs.
-
----
-
-**Key files**:
-
-- **`AMM_model_predict.py`**  
-  The main driver script that reads inputs, processes data, builds descriptors/embeddings, and performs final ADC classification.
-
-- **`transcriptomic_data.h5`**  
-  An HDF5 file containing RNA-seq expression data (counts) for various cell lines. Used to fetch expression values for specific genes.
-
-- **`scaler_proteomics_esm_embeddings.pkl`** and **`pca_model_proteomics_esm_embeddings_0.95_variance.pkl`**  
-  Artifacts for scaling and reducing dimensionality of ESM protein embeddings.
-
-- **`scaler_Cell_Passport_Transcriptomic_mRNA_Count.pkl`** and **`pca_Cell_Passport_Transcriptomic_mRNA_Count.pkl`**  
-  Similar scaler/PCA models, but for transcriptomic data from various cell lines.
-
-- **`read_count_scaler_for_rnaseq.pkl`**  
-  A scaler for raw read counts for genes in the 27-gene panel (used in the pipeline to transform mRNA counts).
-
-- **`Expanded_Key_Genes_for_ADC_Resistance_Analysis.csv`**  
-  A list of 27 specific genes suspected in ADC resistance, paired with their reference sequences. Used for the multi-gene protein intensity predictions.
-
-- **`epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt`**  
-  Trained checkpoint of the `ProteinIntensityModel`.
-
-- **`<cnn_model_checkpoint>.ckpt`**  
-  Trained checkpoint of the final ADC classification CNN (for instance, a file containing “1nM”, “5nM”, or “10nM” in its name, specifying the IC50 threshold used in training).
 
 ---
 
@@ -105,10 +76,6 @@ pip install fair-esm
 ```
 
 **Note**: If you run into issues installing RDKit or ESM, please see their official installation guides.
-
-### 3. Place/Check Model Files
-
-Make sure the `.ckpt` checkpoint files, the `.pkl` scaler/PCA files, and the `.h5` transcriptomic data file are all in the same directory as `AMM_model_predict.py` (or in a location you will reference from the command line).
 
 ---
 
@@ -149,7 +116,7 @@ The script will:
 
 1. Read each row in `my_input.csv`.  
 2. Generate descriptors/fingerprints.  
-3. Fetch transcriptomic data from `transcriptomic_data.h5`.  
+3. Fetch transcriptomic data.  
 4. (If needed) Attempt to look up sequences from UniProt if `ProteinSequence` is empty.  
 5. Predict protein intensities, then run the final CNN model to output:
    - `predicted_probability` (the model’s probability of ADC potency).
@@ -193,10 +160,10 @@ The script will generate separate rows internally and produce predictions in a s
   Path to the `.ckpt` for the `ProteinIntensityModel` to predict protein intensities. Defaults to `epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt`.
 
 - **`--transcriptomic_hdf5`**  
-  Path to `transcriptomic_data.h5` containing RNA-seq read counts.
+  Path to the HDF5 file containing RNA-seq read counts.
 
 - **`--scaler_proteomics`**, **`--pca_proteomics`**, **`--scaler_transcriptomics`**, **`--pca_transcriptomics`**, **`--scaler_specific_count`**  
-  Paths to the `.pkl` scaler/PCA objects used for embedding transformations.
+  Paths to the scaler/PCA objects used for embedding transformations.
 
 - **`--num_workers`**  
   Number of parallel worker processes for descriptor generation.
@@ -234,8 +201,6 @@ Check your resulting CSV file for columns like `predicted_probability` and `pred
 
 If you use this code or the models in your research, please cite:
 
-
----
 
 ## License
 
