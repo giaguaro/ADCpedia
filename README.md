@@ -1,4 +1,3 @@
-```markdown
 # AMM Integrated ADC Prediction Pipeline
 
 This repository contains a single main script **`AMM_model_predict.py`** and its supporting model/data files. The script performs an end-to-end workflow that:
