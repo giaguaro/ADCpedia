@@ -3,7 +3,7 @@
 This repository contains a single main script **`AMM_model_predict.py`** and its supporting model/data files. The script performs an end-to-end workflow that:
 
 1. Reads SMILES structures and (optionally) gene information from a CSV (or uses manually provided arguments).
-2. Generates chemical descriptors using [RDKit](https://www.rdkit.org/) and Descriptastorus-based 2D descriptors.
+2. Generates chemical descriptors using RDKit and Descriptastorus-based 2D descriptors.
 3. Computes additional feature embeddings such as MACCS fingerprints, transcriptomic embeddings, and learned ESM protein embeddings (via [Facebook’s ESM2 model](https://github.com/facebookresearch/esm)).
 4. Predicts protein intensity with a trained PyTorch Lightning model (`ProteinIntensityModel`).
 5. Uses a final convolutional neural network model to classify whether an antibody–drug conjugate (ADC) is predicted to be effective below certain IC50 thresholds.
@@ -69,13 +69,10 @@ pip install descriptastorus
 pip install torch torchvision torchaudio
 pip install pytorch-lightning
 
-# ESM (for protein embeddings), either from source or PyPI:
+# ESM (for protein embeddings). We use 650M model. 
 pip install fair-esm
 
-# etc.
 ```
-
-**Note**: If you run into issues installing RDKit or ESM, please see their official installation guides.
 
 ---
 
@@ -128,25 +125,25 @@ Instead of a CSV, you can supply a single SMILES (payload), plus multiple `(cell
 
 ```bash
 python AMM_model_predict.py \
-  --smiles "CCOc1ccc(cc1)NC(=O)c2ccc(C[C@@H](C)NC(=O)c3cccc(nc3)C(F)(F)F)cc2" \
-  --cell_line HCC1806 HCT116 \
-  --gene_symbol ABCB1 ABCG2 \
+  --smiles "C[C@@H](C(N[C@H](C)[C@H](C1=CC=CC=C1)O)=O)[C@H]([C@@](CCC2)([H])N2C(C[C@@H](OC)[C@H]([C@@H](C)CC)N(C)C([C@H](C(C)C)NC([C@H](C(C)C)N(C)C(OCC(C=C3)=CC=C3NC([C@H](C)NC([C@H](C(C)C)NC(CCCCCN(C4=O)C(C=C4)=O)=O)=O)=O)=O)=O)=O)=O)OC" \
+  --cell_line MDA-MB-468 CALU-6 \
+  --gene_symbol ERBB2 \
   --dar 3.4 \
   --is_tubulin 0 \
   --is_dna 1 \
   --is_not_tubulin_dna 0 \
   --uniprot_id P08183 P45916 \
-  --manual_gene_sequence MTEITAAMVK... MKKLFVGRC... \
+  --manual_gene_sequence MTEITAAMVK... \
   --output_csv manual_output.csv \
-  --cnn_model_checkpoint <cnn_model_checkpoint>.ckpt \
+  --cnn_model_checkpoint adcpedia_checkpoints/<threshold>nM/<cnn_model_checkpoint>.ckpt \
   --protein_intensity_model_checkpoint epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt
 ```
 
 This example:
 
 - Takes one SMILES string.
-- Applies the same SMILES to two cell lines (`HCC1806` and `HCT116`).
-- Uses two gene symbols (`ABCB1` and `ABCG2`) in combination with the cell lines.
+- Applies the same SMILES to two cell lines (`MDA-MB-468` and `CALU-6`).
+- Uses two gene symbols (`ERBB2`) in combination with the cell lines.
 - Optionally supplies matching UniProt IDs or manual sequences for each gene.
 
 The script will generate separate rows internally and produce predictions in a single output CSV.
@@ -155,15 +152,6 @@ The script will generate separate rows internally and produce predictions in a s
 
 - **`--cnn_model_checkpoint`**  
   Required: path to the trained CNN `.ckpt` for final ADC classification.
-
-- **`--protein_intensity_model_checkpoint`**  
-  Path to the `.ckpt` for the `ProteinIntensityModel` to predict protein intensities. Defaults to `epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt`.
-
-- **`--transcriptomic_hdf5`**  
-  Path to the HDF5 file containing RNA-seq read counts.
-
-- **`--scaler_proteomics`**, **`--pca_proteomics`**, **`--scaler_transcriptomics`**, **`--pca_transcriptomics`**, **`--scaler_specific_count`**  
-  Paths to the scaler/PCA objects used for embedding transformations.
 
 - **`--num_workers`**  
   Number of parallel worker processes for descriptor generation.
@@ -182,9 +170,9 @@ The script will generate separate rows internally and produce predictions in a s
 2. **Manual mode** (single SMILES, multiple `(cell_line, gene_symbol)` combos):
    ```bash
    python AMM_model_predict.py \
-     --smiles "C1=CC=CC=C1" \
-     --cell_line MCF7 \
-     --gene_symbol TP53 \
+     --smiles "C[C@@H](C(N[C@H](C)[C@H](C1=CC=CC=C1)O)=O)[C@H]([C@@](CCC2)([H])N2C(C[C@@H](OC)[C@H]([C@@H](C)CC)N(C)C([C@H](C(C)C)NC([C@H](C(C)C)N(C)C(OCC(C=C3)=CC=C3NC([C@H](C)NC([C@H](C(C)C)NC(CCCCCN(C4=O)C(C=C4)=O)=O)=O)=O)=O)=O)=O)=O)OC" \
+     --cell_line MCF-7 \
+     --gene_symbol CD33 \
      --dar 3.0 \
      --is_tubulin 0 \
      --is_dna 0 \
