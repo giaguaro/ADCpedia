@@ -46,23 +46,6 @@ Use either:
 
 ---
 
-## Repository Contents
-
-```
-.
-├── AMM_model_predict.py
-├── transcriptomic_data.h5
-├── scaler_proteomics_esm_embeddings.pkl
-├── pca_model_proteomics_esm_embeddings_0.95_variance.pkl
-├── scaler_Cell_Passport_Transcriptomic_mRNA_Count.pkl
-├── pca_Cell_Passport_Transcriptomic_mRNA_Count.pkl
-├── read_count_scaler_for_rnaseq.pkl
-├── Expanded_Key_Genes_for_ADC_Resistance_Analysis.csv
-├── epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt
-├── <cnn_model_checkpoint>.ckpt
-└── README.md   (this file)
-```
-
 **Key files**:
 
 - **`AMM_model_predict.py`**  
