@@ -1,0 +1,28 @@
+
+artifacts/*
+!artifacts/.gitkeep
+artifacts/pca_Cell_Passport_Transcriptomic_mRNA_Count.pkl
+artifacts/*.pkl
+data/*.h5
+data/transcriptomic_data.h5
+.DS_Store
+.env
+env/
+# Files larger than 100 MB - kept out of GitHub normal git storage
+.ipynb_checkpoints/
+# Large/private assets. Add deliberately if release policy allows it.
+*.log
+logs*/
+logs_best_cnn/
+models/**/*.ckpt
+outputs/*
+!outputs/.gitkeep
+*.pt
+*.pth
+*.pyc
+__pycache__/
+*.pyd
+*.pyo
+.venv/
+venv/
+zero_fill_report.csv

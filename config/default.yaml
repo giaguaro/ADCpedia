@@ -1,0 +1,89 @@
+threshold_nm: 10.0
+seed: 42
+device: auto
+paths:
+  transcriptomic_hdf5: data/transcriptomic_data.h5
+  scaler_proteomics: artifacts/scaler_proteomics_esm_embeddings.pkl
+  pca_proteomics: artifacts/pca_model_proteomics_esm_embeddings_0.95_variance.pkl
+  scaler_transcriptomics: artifacts/scaler_Cell_Passport_Transcriptomic_mRNA_Count.pkl
+  pca_transcriptomics: artifacts/pca_Cell_Passport_Transcriptomic_mRNA_Count.pkl
+  scaler_read_count: artifacts/read_count_scaler_for_rnaseq.pkl
+  specific_genes_file: data/Expanded_Key_Genes_for_ADC_Resistance_Analysis.csv
+  protein_intensity_checkpoint: models/protein_intensity/epoch=24-val_rmse=0.69-val_mse=0.48-val_r2=0.87.ckpt
+  cnn_checkpoint: models/adcpedia_checkpoints/10nM/best_model-10nM-lf1-epoch=11-val_auc=0.849.ckpt
+  model_list: data/model_list_20241120.csv
+  output_dir: outputs
+columns:
+  smiles: SMILES
+  gene: GeneSymbol
+  gene_sequence: ProteinSequence
+  cell_line: CellLine
+  dar: Drug_Antibody_Ratio_(DAR)
+  is_tubulin: Is_Tubulin_Target
+  is_dna: Is_DNA_Target
+  is_not_tubulin_dna: Is_not_Tubulin_DNA_Target
+molecule:
+  antibody_mw: 150000.0
+  maccs_size: 167
+esm:
+  model_name: esm2_t33_650M_UR50D
+  repr_layer: 33
+prediction:
+  pi_batch_size: 4096
+  cnn_batch_size: 128
+  num_workers: 0
+  probability_cutoffs:
+  - 0.5
+  - 0.6
+  report_styled: false
+  all_cell_lines: false
+  fetch_missing_sequences: true
+training:
+  train_csv: data/processed/merged_train_10nM_combined_c9_++.csv
+  val_csv: data/processed/merged_val_10nM_combined_c9.csv
+  test_csv: data/processed/merged_test_10nM_combined_c9.csv
+  checkpoint_dir: models/adcpedia_checkpoints/10nM
+  logger_dir: logs_best_cnn
+  max_epochs: 50
+  patience: 8
+  loss: boundary_weighted_bce
+  probability_cutoff: 0.5
+  num_workers: 0
+cnn_params:
+  group1_feature1_input_dim: 4
+  group1_feature3_input_dim: 356
+  group2_feature2_input_dim: 1
+  group2_feature4_input_dim: 512
+  group2_feature5_input_dim: 64
+  group2_feature9_input_dim: 27
+  group2_feature10_input_dim: 27
+  group3_feature6_input_dim: 200
+  group3_feature7_input_dim: 167
+  group1_feature1_linear_dim: 4
+  group1_feature3_linear_dim: 128
+  group1_hidden_channels: 16
+  group1_kernel_size: 3
+  group1_num_layers: 1
+  group1_dropout: 0.15
+  group2_feature2_linear_dim: 4
+  group2_feature4_linear_dim: 128
+  group2_feature5_linear_dim: 64
+  group2_feature9_linear_dim: 16
+  group2_feature10_linear_dim: 16
+  group2_hidden_channels: 64
+  group2_kernel_size: 5
+  group2_num_layers: 1
+  group2_dropout: 0.0
+  group3_feature6_linear_dim: 128
+  group3_feature7_linear_dim: 128
+  group3_hidden_channels: 128
+  group3_kernel_size: 3
+  group3_num_layers: 2
+  group3_dropout: 0.15
+  hidden_dim: 128
+  num_layers: 1
+  dropout: 0.15
+  lr: 0.0004706004039979286
+  optimizer_type: adam
+  batch_size: 32
+  boundary: 10.0

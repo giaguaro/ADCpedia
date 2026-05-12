@@ -1,0 +1,17 @@
+numpy
+pandas
+scipy
+scikit-learn
+joblib
+tqdm
+requests
+PyYAML
+rdkit-pypi
+descriptastorus
+torch
+torchvision
+torchaudio
+pytorch-lightning
+torchmetrics
+fair-esm
+matplotlib

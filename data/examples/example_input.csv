@@ -1,0 +1,2 @@
+Name,SMILES,CellLine,GeneSymbol,ProteinSequence,Drug_Antibody_Ratio_(DAR),Is_Tubulin_Target,Is_DNA_Target,Is_not_Tubulin_DNA_Target,UniProt_ID
+example_adc,CC[C@H](C)[C@@H]([C@@H](CC(=O)N1CCC[C@H]1[C@H](OC)[C@@H](C)C(=O)N[C@H](C)[C@@H](O)c2ccccc2)OC)N(C)C(=O)[C@@H](NC(=O)[C@H](C(C)C)N(C)C(=O)OCc4ccc(NC(=O)[C@H](CCCNC(N)=O)NC(=O)[C@@H](NC(=O)CCCCCN3C(=O)CC(S)C3=O)C(C)C)cc4)C(C)C,MCF-7,CD33,,3.0,0,0,1,P20138
