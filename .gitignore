@@ -10,7 +10,6 @@ data/transcriptomic_data.h5
 env/
 # Files larger than 100 MB - kept out of GitHub normal git storage
 .ipynb_checkpoints/
-# Large/private assets. Add deliberately if release policy allows it.
 *.log
 logs*/
 logs_best_cnn/
