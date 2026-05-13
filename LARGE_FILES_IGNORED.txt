@@ -1,2 +1,0 @@
-415641904 bytes  ./data/transcriptomic_data.h5
-137037200 bytes  ./artifacts/pca_Cell_Passport_Transcriptomic_mRNA_Count.pkl
