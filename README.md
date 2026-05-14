@@ -2,7 +2,7 @@
 
 This repository contains the 10 nM AMM ADC prediction workflow used for ADC prediction. It takes ADC payload/linker SMILES, antigen information, and cell-line transcriptomic context, then produces a probability and binary call for predicted activity below 10 nM.
 
-The default configuration is in `config/default.yaml`; model checkpoints are available on Zenodo [link].
+The default configuration is in `config/default.yaml`; checkpoints are available on Zenodo [link].
 
 ## Install
 
